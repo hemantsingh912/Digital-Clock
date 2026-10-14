@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Clock</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <main class="container">
+        <section class="clock-card">
+            <div class="card-header">
+                <div>
+                    <h2 id="clockTitle">Digital Clock</h2>
+                </div>
+                
+            </div>
+
+            <div id="digitalClock" class="clock-display digital-display">
+                <div id="digitalTime" class="digital-time">00:00:00</div>
+                <div id="digitalDate" class="digital-date">Loading date...</div>
+                <div id="digitalPeriod" class="period">AM</div>
+            </div>
+
+            <div id="analogClock" class="clock-display analog-display hidden">
+                <div class="analog-clock">
+                    <div class="number number-12">12</div>
+                    <div class="number number-1">1</div>
+                    <div class="number number-2">2</div>
+                    <div class="number number-3">3</div>
+                    <div class="number number-4">4</div>
+                    <div class="number number-5">5</div>
+                    <div class="number number-6">6</div>
+                    <div class="number number-7">7</div>
+                    <div class="number number-8">8</div>
+                    <div class="number number-9">9</div>
+                    <div class="number number-10">10</div>
+                    <div class="number number-11">11</div>
+
+                    <div class="hand hour-hand" id="hourHand"></div>
+                    <div class="hand minute-hand" id="minuteHand"></div>
+                    <div class="hand second-hand" id="secondHand"></div>
+                    <div class="center-dot"></div>
+                </div>
+            </div>
+
+            <div class="clock-controls">
+                <button id="digitalBtn" class="switch-btn active">Digital Clock</button>
+                <button id="analogBtn" class="switch-btn">Analog Clock</button>
+            </div>
+        </section>
+
+        
+    </main>
+
+    <script>
+        const digitalTime = document.getElementById("digitalTime");
+        const digitalDate = document.getElementById("digitalDate");
+        const digitalPeriod = document.getElementById("digitalPeriod");
+        const digitalClock = document.getElementById("digitalClock");
+        const analogClock = document.getElementById("analogClock");
+        const clockTitle = document.getElementById("clockTitle");
+        const digitalBtn = document.getElementById("digitalBtn");
+        const analogBtn = document.getElementById("analogBtn");
+
+        const hourHand = document.getElementById("hourHand");
+        const minuteHand = document.getElementById("minuteHand");
+        const secondHand = document.getElementById("secondHand");
+
+        function updateClock() {
+            const now = new Date();
+
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hour12 = hours % 12 || 12;
+            const period = hours >= 12 ? "PM" : "AM";
+
+            const formattedTime =
+                String(hour12).padStart(2, "0") + ":" +
+                String(minutes).padStart(2, "0") + ":" +
+                String(seconds).padStart(2, "0");
+
+            const dateOptions = {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            };
+
+            const dateText = now.toLocaleDateString("en-IN", dateOptions);
+
+            digitalTime.textContent = formattedTime;
+            digitalDate.textContent = dateText;
+            digitalPeriod.textContent = period;
+
+            const secondDegrees = seconds * 6;
+            const minuteDegrees = minutes * 6 + seconds * 0.1;
+            const hourDegrees = (hours % 12) * 30 + minutes * 0.5;
+
+            secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+            hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+        }
+
+        function showDigitalClock() {
+            digitalClock.classList.remove("hidden");
+            analogClock.classList.add("hidden");
+
+            digitalBtn.classList.add("active");
+            analogBtn.classList.remove("active");
+
+            clockTitle.textContent = "Digital Clock";
+        }
+
+        function showAnalogClock() {
+            analogClock.classList.remove("hidden");
+            digitalClock.classList.add("hidden");
+
+            analogBtn.classList.add("active");
+            digitalBtn.classList.remove("active");
+
+            clockTitle.textContent = "Analog Clock";
+        }
+
+        digitalBtn.addEventListener("click", showDigitalClock);
+        analogBtn.addEventListener("click", showAnalogClock);
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+
+</body>
+</html>
+
